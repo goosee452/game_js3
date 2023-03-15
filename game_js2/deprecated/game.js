@@ -348,6 +348,8 @@ class Player extends Entity{
     #location;//:Point
     #collider;
     #accell;//accelleration:number:seconds/pixel;
+    speedX;
+    speedY;
 
     constructor(){
         super();
@@ -464,6 +466,62 @@ class Room{
         return this.#height;
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class Item extends Entity{
+
+    #sprite;
+    #collider;
+    #location;
+    #ability;
+
+    constructor(){
+        super();
+        this.#location = new Point;
+        this.#collider = new RectHitbox;
+        this.#collider.base = this.#location;
+        this.#sprite = new Image;
+    }
+
+    set ability(ability){
+        this.#ability = ability;   
+    }
+
+    get ability(){
+        return this.#ability;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+class Ability{
+    #duration;
+    #ability;
+
+    constructor(){
+        this.#duration = 0;
+        this.#ability = function(){};
+    }
+
+    get duration(){
+        return this.#duration;
+    }
+
+    get ability(){
+        return this.#ability;
+    }
+
+    set ability(ability){
+        this.#ability = ability;
+    }
+}
+
+function dash(player, spX, spY){
+    player.speedX = spX;
+    player.speedY = spY;
+}  
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -483,71 +541,14 @@ Wall;
 // M     M M     M    A           A    I   N       N N
 // M      M      M   A             A   I   N        NN
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-const GRAVITY = 1;//pxl/interval
-
-let walls = new Array(3);
-let a = new Wall;
-let b = new Wall;
-b.set(150, 150, 100, 100);
-a.set(100, 100, 100, 100);
-b.setSprite(100, 100, 'wall.png');
-a.setSprite(100, 100, 'wall.png');
-walls[0] = a;
-walls[1] = b;
-walls[2] = new Wall;
-walls[2].set(0 ,500, 1, 500);
-console.log(walls[0].location.x);
-
-let player = new Player;
-player.set(250, 250, 100, 100);
-player.setSprite(100, 100, 'wall.png');
-
-const canvas = document.getElementById("canvas");
-const contxt = canvas.getContext("2d");
-
-// draw('canvas', '2d', player, walls);
-// addEventListener("keydown", (event) =>{
-//     if(event.code === 'ArrowUp'){
-//         contxt.clearRect(0, 0, 500, 500);
-//         player.move(0, 10, walls, 10, 0);
-//         draw('canvas', '2d', player, walls);
-//     }
-//     else if(event.code === 'ArrowLeft'){
-//         contxt.clearRect(0, 0, 500, 500);
-//         player.move(-10, 0, walls, 0, 10);
-//         draw('canvas', '2d', player, walls);
-//     }
-//     else if(event.code === 'ArrowRight'){
-//         contxt.clearRect(0, 0, 500, 500);
-//         player.move(10, 0, walls, 0, 10);
-//         draw('canvas', '2d', player, walls);
-//     }
-//     else if(event.code === 'ArrowDown'){
-//         contxt.clearRect(0, 0, 500, 500);
-//         player.move(0, -10, walls, 10, 0);
-//         draw('canvas', '2d', player, walls);
-//     }
-//     else if(event.code === 'Enter'){
-//         contxt.clearRect(0, 0, 500, 500);
-//         player.move(-100, -100, walls, 10, 0);
-//         draw('canvas', '2d', player, walls);
-//     }
-// });
-
-//contxt.clearRect(0, 0, 500, 500);
-let speed = 10;
-playerSpeedX = 0;
-playerSpeedY = 0;
-
 function checkPlatformUnder(player, walls){
     playerPosY = player.location.y;
-    player.move(0, 10, walls, 0, 0);
+    player.move(0, 1, walls, 0, 0);
     if(player.location.y === playerPosY){
         return true;
     }
     else{
-        player.move(0, -10, walls, 0, 0);
+        player.move(0, -1, walls, 0, 0);
         return false;
     }
 
@@ -564,6 +565,34 @@ function checkPlatformAbove(player, walls){
         return false;
     }
 }
+//----------------------------------------------------------------------------------------------------------
+{
+//walls
+let walls = new Array(3);
+let a = new Wall;
+let b = new Wall;
+b.set(150, 150, 100, 100);
+a.set(100, 100, 100, 100);
+b.setSprite(100, 100, 'wall.png');
+a.setSprite(100, 100, 'wall.png');
+walls[0] = a;
+walls[1] = b;
+walls[2] = new Wall;
+walls[2].set(0 ,500, 1, 500);
+//player
+let player = new Player;
+player.set(250, 250, 100, 100);
+player.setSprite(100, 100, 'wall.png');
+//--------
+const canvas = document.getElementById("canvas");
+const contxt = canvas.getContext("2d");
+//--------
+let speed = 10;
+playerSpeedX = 0;
+playerSpeedY = 0;
+
+const GRAVITY = 4;//pxl/interval
+const ySpeedLimit = 30;//for gravity
 
 let arrowRightIsPressed = false;
 let arrowLeftIsPressed = false;
@@ -600,10 +629,10 @@ addEventListener('keyup', (event)=>{
     }
 })
 
-
+let jumpPower = -30;
 addEventListener('keydown', (event)=>{
     if(event.code == 'Space' && checkPlatformUnder(player, walls) == true){
-        playerSpeedY = -30;
+        playerSpeedY = jumpPower;
     }
     else if(event.code == 'Enter'){
         player.move(0, 100, walls, 0, 0);
@@ -615,7 +644,10 @@ setInterval(()=>{
 
     player.move(playerSpeedX, playerSpeedY, walls, 5, 0);
     if(checkPlatformUnder(player, walls) == false){
-        playerSpeedY += GRAVITY;
+        playerSpeedY += GRAVITY;        
+        if(playerSpeedY > ySpeedLimit){
+            playerSpeedY = ySpeedLimit;
+        }
     }
     else{
         playerSpeedY = 0;
@@ -631,3 +663,5 @@ setInterval(()=>{
     draw('canvas', '2d', player, walls);
 },
 framesInterval);
+
+}
