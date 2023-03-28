@@ -1,6 +1,6 @@
 class Player extends Entity{
 
-    #sprite;
+    #animations;
     #location;//:Point
     #collider;
     #accell;//accelleration:number:seconds/pixel;
@@ -14,7 +14,7 @@ class Player extends Entity{
         this.#location = new Point;
         this.#collider = new RectHitbox;
         this.#collider.base = this.#location;
-        this.#sprite = new Image;
+        this.#animations = new Animations;
         this.#accell = 0;
         this.speedX = 0;
         this.speedY = 0;
@@ -22,21 +22,7 @@ class Player extends Entity{
         this.curr_ability = new Ability;
     }
 
-    setSprite(height, width, src){
-        this.#sprite.width = width;
-        this.#sprite.height = height;
-        this.#sprite.src = src;
-    }
-
-    set sprite(sprite){
-        this.#sprite = sprite;
-    }
-
-    getSprite(){
-        return this.#sprite;
-    }
-
-    get sprite(){
-        return this.#sprite;        
+    get animations(){
+        return this.#animations;        
     }
 }

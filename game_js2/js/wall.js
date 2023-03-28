@@ -1,12 +1,12 @@
 class Wall{
     #location;
     #hitbox;
-    #sprite;
+    #animations;
 
     constructor(){
         this.#hitbox = new RectHitbox;
         this.#location = new Point;
-        this.#sprite = new Image;
+        this.#animations = new Animations;
     }
 
     set(x, y, height, width){
@@ -14,12 +14,6 @@ class Wall{
         this.#hitbox.base = this.#location;
         this.#hitbox.height = height;
         this.#hitbox.width = width;
-    }
-
-    setSprite(height, width, src){
-        this.#sprite.width = width;
-        this.#sprite.height = height;
-        this.#sprite.src = src;
     }
 
     get location(){
@@ -38,11 +32,7 @@ class Wall{
         this.#hitbox = hitbox;
     }
 
-    set sprite(sprite){
-        this.#sprite = sprite;
-    }
-
-    get sprite(){
-        return this.#sprite;
+    get animations(){
+        return this.#animations;
     }
 }

@@ -22,6 +22,7 @@ function checkPlatformAbove(player, walls){
         return false;
     }
 }
+
 //----------------------------------------------------------------------------------------------------------
 {
 //walls
@@ -37,8 +38,14 @@ let a = new Wall;
 let b = new Wall;
 b.set(150, 150, 100, 100);
 a.set(100, 100, 100, 100);
-b.setSprite(100, 100, 'wall.png');
-a.setSprite(100, 100, 'wall.png');
+a.animations.setSprite('wall.png');
+a.animations.addAnimation(1, 'anim1', 0, 0);
+a.animations.sHeight = 100;
+a.animations.sWidth = 100;
+b.animations.setSprite('wall.png');
+b.animations.addAnimation(1, 'anim1', 0, 0);
+b.animations.sHeight = 100;
+b.animations.sWidth = 100;
 walls[0] = a;
 walls[1] = b;
 walls[2] = new Wall;
@@ -46,7 +53,11 @@ walls[2].set(0 ,500, 1, 500);
 //player
 let player = new Player;
 player.set(250, 250, 100, 100);
-player.setSprite(100, 100, 'wall.png');
+player.animations.setSprite('wall.png');
+player.animations.addAnimation(1, 'anim1', 0, 0);
+player.animations.sHeight = 100;
+player.animations.sWidth = 100;
+
 //--------
 const canvas = document.getElementById("canvas");
 const contxt = canvas.getContext("2d");
@@ -57,6 +68,14 @@ player.speedY = speed;
 player.jumpPower = -50;
 const GRAVITY = 4;//pxl/interval
 const ySpeedLimit = 30;//for gravity
+
+let new_room = new Room;
+new_room.player_pos.set(0, 0);
+new_room.walls.push(a, b);
+new_room.width = 1000;
+new_room.height = 1000;
+new_room.background = a.animations.sprite;
+console.log(JSON.stringify( new_room.serialise()));
 
 let arrowsPressed = {
     left: 0,
@@ -109,7 +128,11 @@ addEventListener('keyup', (event)=>{
     setPressedArrows('keyup', arrowsPressed, event);
 });
 let dash_crystal = new Item;
-dash_crystal.setSprite(50, 50, 'player.png');
+dash_crystal.animations.curr_sx = 0;
+dash_crystal.animations.curr_sy = 0;
+dash_crystal.animations.setSprite('player.png');
+dash_crystal.animations.sWidth = 100;
+dash_crystal.animations.sHeight = 100;
 dash_crystal.collider.set(400, 400, 50 ,50);
 dash_crystal.location.set(400, 400);
 dash_crystal.ability = dash;
@@ -117,20 +140,15 @@ player.curr_ability = dash_crystal.ability;
 let ticksTillEnd = player.curr_ability.duration;
 let spX = 0;
 let spY = 0;
-let anim2 = new Animations;
-anim2.sHeight = 51;
-anim2.sWidth = 50;
-anim2.setSprite('eye.png');
-anim2.setAnimations(10, 0, 0, 51, 0, 102, 0, 153, 0, 204, 0, 255, 0, 306, 0, 357, 0, 408, 0, 409, 0, 410, 0);
-console.log(anim2.animations);
 addEventListener('keydown', (event)=>{
     if(event.code == 'Space' && checkPlatformUnder(player, walls) == true){
         player.speedY = player.jumpPower;
     }  
     else if(event.code == 'KeyQ'){
+
         spX = 0;
         spY = 0;
-        if(player.curr_ability.isUsed == 0){
+        if(player.curr_ability.isUsed == 0){  
             player.curr_ability.isGoing = true;
             ticksTillEnd = player.curr_ability.duration;
 
@@ -200,18 +218,9 @@ setInterval(()=>{
     }
 }, actionsInterval);
 
-let anim1 = new Image;
-anim1.src = 'eye.png';
-let counter = 0;
-anim2.onload = ()=>{    contxt.drawImage(anim2.sprite, counter * 52, 0, 51, 50, 250, 250, 51, 50)};
 setInterval(()=>{
     contxt.clearRect(0, 0, 500, 500);
     draw('canvas', '2d', player, walls, dash_crystal);
-    counter += 1;
-    if(counter == 10){
-        counter = 0;
-    }
-    contxt.drawImage(anim2.sprite, anim2.animations[counter][0], anim2.animations[counter][1], 51, 50, 250, 250, 51, 50);
-},
+},//, walls, dash_crystal
 framesInterval);
 }

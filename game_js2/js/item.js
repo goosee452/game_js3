@@ -1,5 +1,5 @@
 class Item{
-    #sprite;
+    #animations;
     #collider;
     #location;
     ability;
@@ -9,22 +9,13 @@ class Item{
         this.#location = new Point;
         this.#collider = new RectHitbox;
         this.#collider.base = this.#location;
-        this.#sprite = new Image;
+        this.#animations = new Animations;
         this.ability = new Ability;
         this.isTerminated = 0;
     }
 
-    set sprite(sprite){
-        this.#sprite = sprite;
-    }
-    get sprite(){
-        return this.#sprite;
-    }
-
-    setSprite(height, width, src){
-        this.#sprite.width = width;
-        this.#sprite.height = height;
-        this.#sprite.src = src;
+    get animations(){
+        return this.#animations;
     }
 
     get location(){
