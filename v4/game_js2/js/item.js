@@ -18,6 +18,10 @@ class Item{
         return this.#animations;
     }
 
+    set animations(animations){
+        this.#animations = animations;
+    }
+
     get location(){
         return this.#location;
     }
@@ -41,7 +45,7 @@ class Item{
     //     return this.#ability;
     // }
 
-    tryToBeUsed(player){
+    tryToBeUsed(player, termination_animation){
         function checkCollision(entity_coll, wall_collider){
             if(entity_coll.base.x >= wall_collider.base.x && entity_coll.base.x <= wall_collider.base.x + wall_collider.width){
             }
@@ -66,11 +70,15 @@ class Item{
             return true;
         }
 
-        if(checkCollision(player.collider, this.#collider) == true){
-            console.log(1);
+        if(checkCollision(player.collider, this.#collider) == true && this.isTerminated == 0  ){
             player.curr_ability = this.ability;
             player.curr_ability.isUsed = false;
             this.isTerminated = 1;
+            if(typeof termination_animation == 'string' && typeof termination_animation != 'undefined'){
+                if(this.#animations.animationsMap.has(termination_animation)){
+                    this.#animations.setCurrAnimation(termination_animation);
+                }
+            }
         }
     }
 }

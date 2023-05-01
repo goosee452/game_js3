@@ -9,12 +9,14 @@ class Entity{
     #location;//:Point
     #collider;
     #accell;//accelleration:number:seconds/pixel;
+    isTerminated;
 
     constructor(){
         this.#location = new Point;
         this.#collider = new RectHitbox;
         this.#collider.base = this.#location;
         this.#accell = 0;
+        this.isTerminated = false;
     }
 
     set(x, y, width, height){
@@ -48,7 +50,7 @@ class Entity{
         return this.#accell;
     }
 
-    move(x_path, y_path, walls, plus_x, plus_y){
+    move(x_path, y_path, walls, spikes, plus_x, plus_y){
         //plus_x and plus_y can be explained as entitys ability to move aside if theres wall in its way
         //example: entity cannot move cuz of wall but if entity was 2px left/right it could, so i add plus_x to 
         //entitys location so it will be able to move further
@@ -122,6 +124,13 @@ class Entity{
         while(mod(x_path) > 0 || mod(y_path) > 0){
             //console.log(x_pathPart + '' + y_pathPart);
             //console.log('a');
+            for(let  curr = 0; curr < spikes.length; curr++){
+                if(checkCollision(this.#collider, spikes[curr].hitbox) == true){
+                    this.isTerminated = true;
+                    break mainCycle;
+                }
+            }
+            
             if(mod(x_path) > 0){
                 let x_step = step(x_pathPart);
                 mainCycleX:

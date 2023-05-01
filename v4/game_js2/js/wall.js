@@ -3,10 +3,11 @@ class Wall{
     #hitbox;
     #animations;
 
-    constructor(){
+    constructor(width, height){
         this.#hitbox = new RectHitbox;
         this.#location = new Point;
-        this.#animations = new Animations;
+        this.#location.set(0, 0);
+        this.#animations = new Animations(width, height);
     }
 
     set(x, y, height, width){
@@ -34,5 +35,9 @@ class Wall{
 
     get animations(){
         return this.#animations;
+    }
+
+    set animations(animations){
+        this.#animations = animations;
     }
 }
