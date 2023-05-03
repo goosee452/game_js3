@@ -202,8 +202,20 @@ class Room{
     }
 
     deserialise(string){
-         
-        let room = JSON.parse(string);
+
+        function getSrc(path){
+            let src = 'game_files/';
+            let lastIndex = path.lastIndexOf('/');
+            for(let i = lastIndex + 1; i < path.length; i++){
+                src += path[i];
+            }
+
+            return src;
+        }
+
+        let room = JSON.parse(string);         
+        //console.log(getSrc(room.walls[0].animations.sprites.src));
+
         this.player_pos.x = room.player_pos.x;
         this.player_pos.y = room.player_pos.y;
         this.background.src = room.background_src;
@@ -223,7 +235,7 @@ class Room{
             this.#walls[i].animations.curr_sy = room.walls[i].animations.curr_sy;
             this.#walls[i].animations.sWidth = room.walls[i].animations.sWidth;
             this.#walls[i].animations.sHeight = room.walls[i].animations.sHeight;
-            this.#walls[i].animations.sprite.src = room.walls[i].animations.sprites.src;
+            this.#walls[i].animations.sprite.src = getSrc(room.walls[i].animations.sprites.src);
             this.#walls[i].animations.animations = room.walls[i].animations.animations;
             for(let n = 0; n < room.walls[i].animations.animationsMap.length; n++){
                 this.#walls[i].animations.animationsMap.set(room.walls[i].animations.animationsMap[n][0], room.walls[i].animations.animationsMap[n][1]);
@@ -243,7 +255,7 @@ class Room{
             this.#spikes[i].animations.curr_sy = room.spikes[i].animations.curr_sy;
             this.#spikes[i].animations.sWidth = room.spikes[i].animations.sWidth;
             this.#spikes[i].animations.sHeight = room.spikes[i].animations.sHeight;
-            this.#spikes[i].animations.sprite.src = room.spikes[i].animations.sprites.src;
+            this.#spikes[i].animations.sprite.src = getSrc(room.spikes[i].animations.sprites.src);
             this.#spikes[i].animations.animations = room.spikes[i].animations.animations;
             for(let n = 0; n < room.spikes[i].animations.animationsMap.lrngth; n++){
                 this.#spikes[i].animations.animationsMap.set(room.spikes[i].animations.animationsMap[n][0], room.spikes[i].animations.animationsMap[n][1]);
@@ -264,7 +276,7 @@ class Room{
             this.#items[i].animations.curr_sy = room.items[i].animations.curr_sy;
             this.#items[i].animations.sWidth = room.items[i].animations.sWidth;
             this.#items[i].animations.sHeight = room.items[i].animations.sHeight;
-            this.#items[i].animations.sprite.src = room.items[i].animations.sprites.src;
+            this.#items[i].animations.sprite.src = getSrc(room.items[i].animations.sprites.src);
             this.#items[i].animations.animations = room.items[i].animations.animations;
             for(let n = 0; n < room.items[i].animations.animationsMap.length; n++){
                 this.#items[i].animations.animationsMap.set(room.items[i].animations.animationsMap[n][0], room.items[i].animations.animationsMap[n][1]);
